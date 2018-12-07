@@ -4,30 +4,32 @@ import pickle
 
 class neuroNet:
 
-    def __init__(self,xCount,y1Count,y2Count):
-        self.x=[]
-        self.w1=[]
-        self.e1=[]
-        self.y1=[]
-        self.w2=[]
-        self.e2=[]
-        self.y2=[]
-        self.w3=[]
-        self.e3=0
-        self.y3=0
-        self.z=1
-        self.d3=1
-        self.d2=[]
-        self.d1=[]
-        self.w1New=[]
-        self.w2New=[]
-        self.w3New=[]
-        self.xCount=xCount
-        self.y1Count=y1Count
-        self.y2Count=y2Count
+    def __init__(self,xCount,y1Count,y2Count,name):
+        self.x=[]#входной слой
+        self.w1=[]#веса перед первым скрытым
+        self.e1=[]#взвешенная сумма в первым скрытым
+        self.y1=[]#выход первого скрытого
+        self.w2=[]#веса перед вторым скрытым
+        self.e2=[]#взвешенная сумма во втором скрытом
+        self.y2=[]#выход второго скрытого
+        self.w3=[]#веса перед выходом
+        self.e3=0#взвешенная сумма в выходе
+        self.y3=0#выход нейросети
+        self.z=1#эталон
+        self.d3=1#ошибка выхода
+        self.d2=[]#ошибка второго скрытого
+        self.d1=[]#ошибка перовго скрытого
+        self.w1New=[]#новые веса перед первым скрытым
+        self.w2New=[]#новые веса перед вторым скрытым
+        self.w3New=[]#новые веса перед выходом
+        self.xCount=xCount#количество входных нейронов
+        self.y1Count=y1Count#количество нейронов в первом скрытом слое
+        self.y2Count=y2Count#количество нейронов во втором скрытом слое
+        self.name=name#буква нейросети
         self.xInit()
 
     def xInit(self):
+    #заполнение нулями всего чего можно при инициализации
         for i in range(0,self.xCount):
             self.x.append(0)
         for i in range(0,self.y1Count):
@@ -42,6 +44,7 @@ class neuroNet:
         self.w2Init()
         self.w3Init()
 
+    #рандомные веса при инициализации 
     def w1Init(self):
         for i in range(0,(self.xCount*self.y1Count)):
             self.w1.append(random.uniform(-1, 1))
@@ -58,6 +61,7 @@ class neuroNet:
         self.w3New=self.w3[:]
 
     def outWindow(self):
+        #вывод нейросети (старая версия)
         print(self.x)
         print(self.w1)
         print(self.e1)
@@ -77,6 +81,7 @@ class neuroNet:
         print(self.w3New)
         
     def randomWeights(self):
+        #рандомные веса (старая версия)
         for i in range(0,(self.xCount*self.y1Count)):
             self.w1[i]=random.uniform(-1, 1)
         for i in range(0,(self.y1Count*self.y2Count)):
@@ -84,6 +89,7 @@ class neuroNet:
         for i in range(0,self.y2Count):
             self.w3[i]=random.uniform(-1, 1)
 
+    #подсчёт
     def calculate(self):
         for i in range(0,self.y1Count):
             self.e1[i]=0
@@ -134,23 +140,17 @@ class neuroNet:
             self.w3New[i]=self.w3[i]+self.d3*(exp(-self.e3)/(1+exp(-self.e3))**2)*self.y2[i]
         
     def lesson(self):
-        for i in range(1,151):
+        for i in range(1,1001):
+            #замена весов, новыми весами
             self.w1=self.w1New[:]
             self.w2=self.w2New[:]
             self.w3=self.w3New[:]
             self.calculate()
+            #проверка на эталон, 90 процентов точность
             if (self.z==1):
-                if (self.y3>0.95):
+                if (self.y3>0.9):
                     return i
             elif (self.z==0):
-                if (self.y3<0.05):
+                if (self.y3<0.9):
                     return i
-        return 150
-
-    def saveNeuro(self):
-        with open('data.pickle', 'wb') as f:
-            pickle.dump(self.__dict__, f)
-
-    def loadNeuro(self):
-        with open('data.pickle', 'rb') as f:
-            self.__dict__ = pickle.load(f)
+        return 1000
