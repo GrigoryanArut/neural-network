@@ -76,10 +76,14 @@ def teaching(neuro,listTeaching,lenAlphabet,kolLetterTeaching):
     #обучение по условию
     iterLesson=0
     excLesson=0
-    #print(neuro.name)
-
+    era=0
+    print(neuro.name)
+    
+    
     while (excLesson<lenAlphabet*kolLetterTeaching):#обучается пока не найдет все буквы с первого раза
         excLesson=0
+        globalIterLesson=0
+        era=era+1
         for i in listTeaching:
             if (i==neuro.name):
                 neuro.z=1
@@ -88,8 +92,11 @@ def teaching(neuro,listTeaching,lenAlphabet,kolLetterTeaching):
             for c in range(1,1+9*kolLetterTeaching,9):
                 letterCopy(neuro,c,i)
                 iterLesson=neuro.lesson()
-                if (iterLesson==1):
+                globalIterLesson=globalIterLesson+iterLesson
+                if (iterLesson==0):
                     excLesson=excLesson+1
+        print('iterKor =',globalIterLesson)
+    print('era =',era)
 
 def main():
     #создание списка нейросетей

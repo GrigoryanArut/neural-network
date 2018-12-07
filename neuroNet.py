@@ -140,6 +140,12 @@ class neuroNet:
             self.w3New[i]=self.w3[i]+self.d3*(exp(-self.e3)/(1+exp(-self.e3))**2)*self.y2[i]
         
     def lesson(self):
+        if (self.z==1):
+            if (self.y3>0.9):
+                return 0
+        elif (self.z==0):
+            if (self.y3<0.9):
+                return 0
         for i in range(1,1001):
             #замена весов, новыми весами
             self.w1=self.w1New[:]
